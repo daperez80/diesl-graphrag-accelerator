@@ -1,10 +1,19 @@
 {
-  "GRAPHRAG_API_BASE": "__GRAPHRAG_API_BASE__",
-  "GRAPHRAG_API_VERSION": "__GRAPHRAG_API_VERSION__",
-  "GRAPHRAG_EMBEDDING_DEPLOYMENT_NAME": "__GRAPHRAG_EMBEDDING_DEPLOYMENT_NAME__",
-  "GRAPHRAG_EMBEDDING_MODEL": "__GRAPHRAG_EMBEDDING_MODEL__",
-  "GRAPHRAG_LLM_DEPLOYMENT_NAME": "__GRAPHRAG_LLM_DEPLOYMENT_NAME__",
-  "GRAPHRAG_LLM_MODEL": "__GRAPHRAG_LLM_MODEL__",
-  "LOCATION": "__LOCATION__",
-  "RESOURCE_GROUP": "__RESOURCE_GROUP__"
+  "GRAPHRAG_API_BASE": "https://diesl-eus-openai-dev.openai.azure.com/",
+  "GRAPHRAG_API_VERSION": "2023-03-15-preview",
+  "GRAPHRAG_EMBEDDING_DEPLOYMENT_NAME": "text-embedding-ada-002",
+  "GRAPHRAG_EMBEDDING_MODEL": "text-embedding-ada-002",
+  "GRAPHRAG_LLM_DEPLOYMENT_NAME": "gpt-4o",
+  "GRAPHRAG_LLM_MODEL": "gpt-4o",
+  "LOCATION": "centralus",
+  "RESOURCE_GROUP": "DIESL-DEV-LAB",
+  "CONTAINER_REGISTRY_NAME" : "diesldevlabacr",
+  "GRAPHRAG_IMAGE": "graphrag:backend",
+  "GRAPHRAG_COGNITIVE_SERVICES_ENDPOINT": "https://cognitiveservices.azure.com/.default",
+  "APIM_NAME": "DIESL-DEV-LAB-APIM",
+  "APIM_TIER": "Developer",
+  "RESOURCE_BASE_NAME": "DIESL-DEV-LAB",
+  "AISEARCH_ENDPOINT_SUFFIX": "search.windows.net",
+  "AISEARCH_AUDIENCE": "https://search.azure.com/",
+  "REPORTERS": "[blob,console,file,app_insights]"
 }
