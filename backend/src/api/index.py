@@ -8,6 +8,10 @@ import traceback
 from time import time
 from typing import cast
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import yaml
 from azure.identity import DefaultAzureCredential
 from azure.search.documents.indexes import SearchIndexClient
@@ -61,6 +65,8 @@ index_route = APIRouter(
     tags=["Index Operations"],
 )
 
+
+client_id = os.getenv("AZURE_CLIENT_ID")
 
 @index_route.post(
     "",
@@ -437,7 +443,7 @@ async def delete_index(index_name: str):
 
         index_client = SearchIndexClient(
             endpoint=ai_search_url,
-            credential=DefaultAzureCredential(),
+            credential=DefaultAzureCredential(managed_identiy_client_id=client_id),
             audience=ai_search_audience,
         )
         ai_search_index_name = f"{sanitized_index_name}_description_embedding"

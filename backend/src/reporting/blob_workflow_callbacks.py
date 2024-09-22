@@ -13,6 +13,13 @@ from azure.storage.blob import BlobServiceClient
 from datashaper import NoopWorkflowCallbacks
 from devtools import pformat
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+client_id = os.getenv("AZURE_CLIENT_ID")
+
 
 class BlobWorkflowCallbacks(NoopWorkflowCallbacks):
     """A reporter that writes to a blob storage."""
@@ -42,7 +49,7 @@ class BlobWorkflowCallbacks(NoopWorkflowCallbacks):
             num_workflow_steps (int): A list of workflow names ordered by their execution. Defaults to [].
         """
         self._storage_account_blob_url = storage_account_blob_url
-        credential = DefaultAzureCredential()
+        credential = DefaultAzureCredential(managed_identity_client_id=client_id)
         self._blob_service_client = BlobServiceClient(
             storage_account_blob_url, credential=credential
         )

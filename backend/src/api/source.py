@@ -26,6 +26,12 @@ source_route = APIRouter(
 )
 
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
+client_id = os.getenv("AZURE_CLIENT_ID")
+
 COMMUNITY_REPORT_TABLE = "output/create_final_community_reports.parquet"
 COVARIATES_TABLE = "output/create_final_covariates.parquet"
 ENTITY_EMBEDDING_TABLE = "output/create_final_entities.parquet"
@@ -38,7 +44,7 @@ storage_account_host = storage_account_blob_url.split("//")[1]
 storage_options = {
     "account_name": storage_account_name,
     "account_host": storage_account_host,
-    "credential": DefaultAzureCredential(),
+    "credential": DefaultAzureCredential(managed_identity_client_id=client_id),
 }
 
 

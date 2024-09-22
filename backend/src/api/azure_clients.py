@@ -19,6 +19,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+client_id = os.getenv("AZURE_CLIENT_ID")
+
 
 class CosmosClientSingleton:
     _instance = None
@@ -27,8 +29,8 @@ class CosmosClientSingleton:
     @classmethod
     def get_instance(cls):
         if cls._instance is None:
-            endpoint = os.environ["COSMOS_URI_ENDPOINT"]
-            credential = DefaultAzureCredential()
+            endpoint = os.getenv("COSMOS_URI_ENDPOINT")
+            credential = DefaultAzureCredential(managed_identiy_client_id=client_id)
             cls._instance = CosmosClient(endpoint, credential)
         return cls._instance
 
@@ -40,14 +42,14 @@ class BlobServiceClientSingleton:
     @classmethod
     def get_instance(cls):
         if cls._instance is None:
-            account_url = os.environ["STORAGE_ACCOUNT_BLOB_URL"]
-            credential = DefaultAzureCredential()
+            account_url = os.getenv("STORAGE_ACCOUNT_BLOB_URL")
+            credential = DefaultAzureCredential(managed_identiy_client_id=client_id)
             cls._instance = BlobServiceClient(account_url, credential=credential)
         return cls._instance
 
     @classmethod
     def get_storage_account_name(cls):
-        account_url = os.environ["STORAGE_ACCOUNT_BLOB_URL"]
+        account_url = os.getenv("STORAGE_ACCOUNT_BLOB_URL")
         return account_url.split("//")[1].split(".")[0]
 
 
@@ -58,14 +60,14 @@ class BlobServiceClientSingletonAsync:
     @classmethod
     def get_instance(cls):
         if cls._instance is None:
-            account_url = os.environ["STORAGE_ACCOUNT_BLOB_URL"]
-            credential = DefaultAzureCredential()
+            account_url = os.getenv("STORAGE_ACCOUNT_BLOB_URL")
+            credential = DefaultAzureCredential(managed_identiy_client_id=client_id)
             cls._instance = BlobServiceClientAsync(account_url, credential=credential)
         return cls._instance
 
     @classmethod
     def get_storage_account_name(cls):
-        account_url = os.environ["STORAGE_ACCOUNT_BLOB_URL"]
+        account_url = os.getenv("STORAGE_ACCOUNT_BLOB_URL")
         return account_url.split("//")[1].split(".")[0]
 
 
@@ -103,15 +105,15 @@ class AzureStorageClientManager:
         self.cosmos_uri_endpoint = self._env.str(
             "COSMOS_URI_ENDPOINT", ENDPOINT_ERROR_MSG
         )
-        credential = DefaultAzureCredential()
+        credential = DefaultAzureCredential(managed_identiy_client_id=client_id)
         self._blob_service_client = BlobServiceClient(
-            account_url=os.environ["STORAGE_ACCOUNT_BLOB_URL"], credential=credential
+            account_url=os.getenv("STORAGE_ACCOUNT_BLOB_URL"), credential=credential
         )
         self._blob_service_client_async = BlobServiceClientAsync(
-            account_url=os.environ["STORAGE_ACCOUNT_BLOB_URL"], credential=credential
+            account_url=os.getenv("STORAGE_ACCOUNT_BLOB_URL"), credential=credential
         )
         self._cosmos_client = CosmosClient(
-            url=os.environ["COSMOS_URI_ENDPOINT"], credential=credential
+            url=os.getenv("COSMOS_URI_ENDPOINT"), credential=credential
         )
 
     def get_blob_service_client(self) -> BlobServiceClient:

@@ -7,7 +7,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: PLACEHOLDER
+  name: graphrag-indexing
 spec:
   ttlSecondsAfterFinished: 30
   backoffLimit: 3
@@ -16,13 +16,13 @@ spec:
       labels:
         azure.workload.identity/use: "true"
     spec:
-      serviceAccountName: PLACEHOLDER
+      serviceAccountName: graphrag-sa
       restartPolicy: OnFailure
       nodeSelector:
         workload: graphrag-indexing
       containers:
       - name: graphrag
-        image: PLACEHOLDER
+        image: dieslorgeusacr01.azurecr.io/graphrag:backend
         imagePullPolicy: Always
         resources:
           requests:
@@ -34,4 +34,6 @@ spec:
         envFrom:
         - configMapRef:
             name: graphrag
-        command: [PLACEHOLDER]
+        command:
+            - python
+            - "run-indexing-jobs.py"
