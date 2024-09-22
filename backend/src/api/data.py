@@ -174,6 +174,7 @@ async def upload_files(
             "id": sanitized_storage_name,
             "human_readable_name": storage_name,
             "type": "data",
+            "parition_key": "/address"
         })
         return BaseResponse(status="File upload successful.")
     except Exception:
@@ -206,7 +207,9 @@ async def delete_files(storage_name: str):
         )
         container_store_client.delete_item(
             item=sanitized_storage_name,
-            partition_key=sanitized_storage_name,
+            # partition_key=sanitized_storage_name,
+            partition_key="/address"
+
         )
     except Exception:
         reporter = ReporterSingleton().get_instance()

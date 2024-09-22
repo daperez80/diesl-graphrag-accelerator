@@ -2,7 +2,6 @@
 # Licensed under the MIT License.
 
 FROM python:3.10
-WORKDIR /app
 
 # default graphrag version will be 0.0.0 unless overridden by --build-arg
 ARG GRAPHRAG_VERSION=0.0.0
@@ -13,7 +12,8 @@ ENV SETUPTOOLS_USE_DISTUTILS=stdlib
 ENV PYTHONPATH=/backend
 
 COPY backend /backend
-RUN cd backend \
+RUN ls -la \
+    && cd backend \
     && pip install poetry \
     && poetry config virtualenvs.create false \
     && poetry install
@@ -25,7 +25,8 @@ RUN python -m nltk.downloader punkt averaged_perceptron_tagger maxent_ne_chunker
 # See https://github.com/fsspec/adlfs/pull/480
 # TODO: remove this once PR has been merged and a new version released
 RUN sed -i '/self.credential = credential/a\ \ \ \ \ \ \ \ if kwargs.get("account_host"): self.account_host = kwargs.get("account_host")' /usr/local/lib/python3.10/site-packages/adlfs/spec.py
-COPY ./backend /app/
-WORKDIR /app
+
+WORKDIR /backend
 EXPOSE 80
+
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "80"]
