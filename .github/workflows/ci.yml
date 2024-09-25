@@ -41,7 +41,7 @@ jobs:
       - name: Push Docker image to ACR
         env:
           REGISTRY: dieslorgeusacr01.azurecr.io 
-          IMAGE_NAME: diesl-backend
+          IMAGE_NAME: graphrag
         run: |
           az acr login --name dieslorgeusacr01.azurecr.io
           docker push $REGISTRY/$IMAGE_NAME:backend
