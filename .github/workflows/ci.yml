@@ -1,0 +1,48 @@
+name: DEPLOY-2-DEV
+run-name: CD - ${{ github.actor }} - deploy to dev
+on:
+  push:
+    branches-ignore:
+        - 'dev'
+        - 'main'
+jobs:
+  build-and-push:
+    env:
+      AZ_TENANT_ID: ${{secrets.AZ_TENANT_ID}}
+      AZ_CLIENT_ID: ${{secrets.AZ_CLIENT_ID}}
+      DIESL_TF_AGENTS: ${{secrets.DIESL_TF_AGENTS}}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Check Az CLI Version
+        run: az --version
+
+      - name: Login to Azure
+        run: |
+          az login --service-principal -u ${{secrets.AZ_CLIENT_ID}} -p ${{secrets.DIESL_TF_AGENTS}} --tenant ${{secrets.AZ_TENANT_ID}} --allow-no-subscriptions
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Build and Push Docker image
+        env:
+          REGISTRY: dieslorgeusacr01.azurecr.io
+          IMAGE_NAME: graphrag
+        run: |
+            docker buildx create --use
+            docker buildx inspect --bootstrap
+            docker buildx build --no-cache --platform linux/amd64 --tag $REGISTRY/$IMAGE_NAME:backend --load -f docker/Dockerfile-backend .
+            docker buildx build --no-cache --platform linux/amd64 --tag $REGISTRY/$IMAGE_NAME:${GITHUB_SHA::7} --load -f docker/Dockerfile-backend .
+      - name: Push Docker image to ACR
+        env:
+          REGISTRY: dieslorgeusacr01.azurecr.io 
+          IMAGE_NAME: diesl-backend
+        run: |
+          az acr login --name dieslorgeusacr01.azurecr.io
+          docker push $REGISTRY/$IMAGE_NAME:backend
+          docker push $REGISTRY/$IMAGE_NAME:${GITHUB_SHA::7}   
